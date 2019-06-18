@@ -21,7 +21,7 @@ function App() {
         </a>
       </header>
       <div className="container-fluid">
-        <Demos name="Indra" />
+        <Demos name="Indra" init={5} />
       </div>
     </div>
   );
