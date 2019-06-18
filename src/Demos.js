@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Contador from './Contador'
 
-const Saluda = (props) => <h1>Hola {props.nombre}</h1>;
+export const Saluda = (props) => <h1>Hola {props.nombre}</h1>;
 
 function fnSaluda(nombre, tipo) {
     // eslint-disable-next-line eqeqeq

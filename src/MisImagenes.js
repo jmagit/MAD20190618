@@ -44,6 +44,33 @@ export default class MisImagenes extends Component {
             (fila, index) => {
                 const tamaño = { height: this.state.dim, width: this.state.dim };
                 return (
+                    <div className="row" key={'F' + index.toString()}>
+                        {fila.map((celda, subindex) => (
+                            <div className="col" key={'F' + index.toString() + 'C' + subindex.toString()}>
+                                {celda && <FotoCard foto={celda} titulo={(index + 1) + '-' + (subindex + 1)} dim={this.state.dim} onClick={this.anula.bind(this, index, subindex)} >Descargado de {celda}</FotoCard>}
+                                {!celda && <button style={tamaño} onClick={this.cambia.bind(this, index, subindex)}>{(index + 1) + '-' + (subindex + 1)}</button>}
+                            </div>
+                        )
+                        )}
+                    </div>
+                )
+            }
+        );
+        return (
+            <div>
+                <Contador init={this.state.dim} delta={32} min={32} max={512} onChange={rslt => this.setState({ dim: rslt })} />
+                <div className="container-fluid">
+                    {rslt}
+                </div>
+             </div>
+        )
+    }
+
+    renderTable() {
+        const rslt = this.state.listado.map(
+            (fila, index) => {
+                const tamaño = { height: this.state.dim, width: this.state.dim };
+                return (
                     <tr key={'F' + index.toString()}>
                         {fila.map((celda, subindex) => (
                             <td key={'F' + index.toString() + 'C' + subindex.toString()}>
