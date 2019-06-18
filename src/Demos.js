@@ -47,7 +47,7 @@ export default class Demos extends Component {
         //this.props.name = "kkkk";
         return (
             <div>
-                <Contador init={this.props.init} onChange={v=> this.setState({ valor: v }) } />
+                <Contador init={this.props.init} min={1} max={10} onChange={v=> this.setState({ valor: v }) } />
                 Numero: {this.state.valor}<br/>
                 <Contador init={this.state.valor} />
                 {process.env.REACT_APP_MODO === 'kk' && <span>Modo: {process.env.REACT_APP_MODO}<br /></span>}

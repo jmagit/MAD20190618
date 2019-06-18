@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Demos from './Demos';
+import MisImagenes from './MisImagenes';
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         </a>
       </header>
       <div className="container-fluid">
-        <Demos name="Indra" init={5} />
+        {/* <Demos name="Indra" init={5} /> */}
+        <MisImagenes />
       </div>
     </div>
   );
