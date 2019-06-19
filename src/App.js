@@ -5,6 +5,7 @@ import Demos, { Saluda } from './Demos';
 import MisImagenes from './MisImagenes';
 import Contador from './Contador';
 import Calculadora from './Calculadora';
+import Personas from './Personas';
 import { Navbar, Nav } from 'react-bootstrap';
 
 /*
@@ -52,8 +53,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.menu = [
-      { titulo: 'Demos', componente: <Demos name="Indra" init={5} /> },
+      { titulo: 'Personas', componente: <Personas /> },
       { titulo: 'Inicio', componente: (<div><Saluda nombre={this.props.name} /><Contador /></div>) },
+      { titulo: 'Demos', componente: <Demos name="Indra" init={5} /> },
       { titulo: 'Muro', componente: <MisImagenes /> },
       { titulo: 'Calculadora', componente: <div><h1>Calculadora</h1><Calculadora /></div> },
     ];

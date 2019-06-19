@@ -58,17 +58,17 @@ export default class Calculadora extends Component {
     componentWillReceiveProps(next_props) {
         console.warn('Calculadora componentWillReceiveProps');
         if(this.props.init !== next_props.init && next_props.init != this.state.pantalla) {
-            if(isNaN(next_props.init))
+            if(isNaN(+next_props.init))
                 throw new Error("Not a number");
             this.limpiar = false;
             this.setState({ pantalla: next_props.init.toString() });
         }
     }
-    shouldComponentUpdate(next_props, next_state) {
-        console.warn('Calculadora shouldComponentUpdate');
-        return this.state.pantalla !== next_state.pantalla || 
-            this.state.resumen !== next_state.resumen;
-    }
+    // shouldComponentUpdate(next_props, next_state) {
+    //     console.warn('Calculadora shouldComponentUpdate');
+    //     return this.state.pantalla !== next_state.pantalla || 
+    //         this.state.resumen !== next_state.resumen;
+    // }
 
     render() {
         console.warn('Calculadora render');
