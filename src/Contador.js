@@ -36,6 +36,20 @@ export default class Contador extends Component {
             this.props.onChange(valor);
         return valor;
     }
+
+    componentWillMount() {
+        console.warn('Fase componentWillMount');
+    }
+    componentWillReceiveProps(next_props) {
+        console.warn('Fase componentWillReceiveProps');
+    }
+    shouldComponentUpdate(next_props, next_state) {
+        console.warn('Fase shouldComponentUpdate');
+        return true;
+    }
+    componentWillUpdate(next_props, next_state) {
+        console.warn('Fase componentWillUpdate');
+    }
     render() {
         return (
             <div>
@@ -43,9 +57,21 @@ export default class Contador extends Component {
                 <div>
                     <button onClick={this.sube.bind(this, this.props.delta)}>+</button>
                     <button onClick={this.baja}>-</button>
-                    <button onClick={e => this.setState({ contador: this.cambia(+this.props.init) }) }>Inicia</button>
+                    <button onClick={e => this.setState({ contador: this.cambia(+this.props.init) }) }
+                        ref={(tag) => {this.btnInit = tag; }}>Inicia</button>
                 </div>
             </div>
         )
+    }
+    componentDidMount() {
+        console.warn('Fase componentDidMount');
+        this.btnInit.focus();
+    }
+    componentDidUpdate(next_props, next_state) {
+        console.warn('Fase componentDidUpdate');
+        this.btnInit.focus();
+    }
+    componentWillUnmount() {
+        console.warn('Fase componentWillUnmount');
     }
 }

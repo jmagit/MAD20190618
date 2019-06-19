@@ -60,7 +60,7 @@ export default class Demos extends Component {
                     <Saluda nombre={this.props.name} />
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic, alias. Temporibus aliquid, natus totam voluptatem dolore eum iure debitis numquam libero molestiae itaque quisquam non. Quo ad debitis aliquam provident.
                 </Card>
-
+                <button onClick={e=>this.setState({ valor: 0 })}>Modifica</button>
             </div>
         )
     }
