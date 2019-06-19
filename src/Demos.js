@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Contador from './Contador'
+import Calculadora from './Calculadora';
+import ErrorBoundary from './ErrorBoundary';
 
 export const Saluda = (props) => <h1>Hola {props.nombre}</h1>;
 
@@ -19,16 +21,16 @@ const lista = [
 
 export class Card extends Component {
     render() {
-        if(!this.props.titulo)
+        if (!this.props.titulo)
             return <div>Falta el titulo</div>
         return <div className="card">
-        <div className="card-header">
-          {this.props.titulo}
+            <div className="card-header">
+                {this.props.titulo}
+            </div>
+            <div className="card-body">
+                {this.props.children}
+            </div>
         </div>
-        <div className="card-body">
-          {this.props.children}
-        </div>
-      </div>
     }
 }
 export default class Demos extends Component {
@@ -41,26 +43,35 @@ export default class Demos extends Component {
     }
     constructor(props) {
         super(props);
-        this.state = { valor: +this.props.init };
+        this.state = { valor: +this.props.init, cont: +this.props.init };
     }
     render() {
         //this.props.name = "kkkk";
         return (
             <div>
-                <Contador init={this.props.init} min={1} max={10} onChange={v=> this.setState({ valor: v }) } />
-                Numero: {this.state.valor}<br/>
-                <Contador init={this.state.valor} />
+                <Contador init={this.state.cont} min={1} max={10} onChange={v => this.setState({ valor: v })} />
+                Numero: {this.state.valor}<br />
+                <ErrorBoundary>
+                    <div className="row">
+                        <div className="col-6">
+                            <Contador init={this.props.init} onChange={v => this.setState({ cont: v })} />
+                        </div>
+                        <div className="col-6">
+                            <Calculadora init={this.state.cont} onChange={v => this.setState({ valor: v })} />
+                        </div>
+                    </div>
+                </ErrorBoundary>
                 {process.env.REACT_APP_MODO === 'kk' && <span>Modo: {process.env.REACT_APP_MODO}<br /></span>}
                 {fnSaluda('MUNDO', 2)}
-                
+
                 <ul>
                     {lista.map((item, index) => <li key={item.id}>{item.nombre}</li>)}
                 </ul>
                 <Card titulo="Demo Tarjeta">
                     <Saluda nombre={this.props.name} />
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic, alias. Temporibus aliquid, natus totam voluptatem dolore eum iure debitis numquam libero molestiae itaque quisquam non. Quo ad debitis aliquam provident.
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic, alias. Temporibus aliquid, natus totam voluptatem dolore eum iure debitis numquam libero molestiae itaque quisquam non. Quo ad debitis aliquam provident.
                 </Card>
-                <button onClick={e=>this.setState({ valor: 0 })}>Modifica</button>
+                <button onClick={e => this.setState({ cont: 'kk' })}>Modifica</button>
             </div>
         )
     }

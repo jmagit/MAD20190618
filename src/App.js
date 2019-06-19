@@ -4,7 +4,10 @@ import './App.css';
 import Demos, { Saluda } from './Demos';
 import MisImagenes from './MisImagenes';
 import Contador from './Contador';
+import Calculadora from './Calculadora';
+import { Navbar, Nav } from 'react-bootstrap';
 
+/*
 class Cabecera extends React.Component {
   render() {
     return <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -27,13 +30,32 @@ class Cabecera extends React.Component {
       ;
   }
 }
+*/
+class Cabecera extends React.Component {
+  render() {
+    return <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar.Brand href="/"><img src={logo} className="App-logo" alt="logo" /></Navbar.Brand>
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+      <Nav className="mr-auto">
+      {this.props.menu.map((item, index) =>
+            <li key={index} className="nav-item">
+              <button className="btn btn-link nav-link" onClick={e => this.props.onSelect(index)}>{item.titulo}</button>
+            </li>
+          )}
+      </Nav>
+    </Navbar.Collapse>
+  </Navbar>;
+  }
+}
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.menu = [
-      { titulo: 'Inicio', componente: (<div><Saluda nombre={this.props.name} /><Contador /></div>) },
       { titulo: 'Demos', componente: <Demos name="Indra" init={5} /> },
+      { titulo: 'Inicio', componente: (<div><Saluda nombre={this.props.name} /><Contador /></div>) },
       { titulo: 'Muro', componente: <MisImagenes /> },
+      { titulo: 'Calculadora', componente: <div><h1>Calculadora</h1><Calculadora /></div> },
     ];
     this.state = { paginaActual: this.menu[0].componente };
     this.selecciona = (index) => {
