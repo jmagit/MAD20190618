@@ -6,6 +6,7 @@ import MisImagenes from './MisImagenes';
 import Contador from './Contador';
 import Calculadora from './Calculadora';
 import Personas from './Personas';
+import Blog from './Blog';
 import { Navbar, Nav } from 'react-bootstrap';
 
 /*
@@ -53,11 +54,12 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.menu = [
-      { titulo: 'Personas', componente: <Personas /> },
+      { titulo: 'Blog', componente: <Blog /> },
       { titulo: 'Inicio', componente: (<div><Saluda nombre={this.props.name} /><Contador /></div>) },
       { titulo: 'Demos', componente: <Demos name="Indra" init={5} /> },
       { titulo: 'Muro', componente: <MisImagenes /> },
       { titulo: 'Calculadora', componente: <div><h1>Calculadora</h1><Calculadora /></div> },
+      { titulo: 'Personas', componente: <Personas /> },
     ];
     this.state = { paginaActual: this.menu[0].componente };
     this.selecciona = (index) => {

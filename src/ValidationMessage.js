@@ -1,4 +1,5 @@
 import React from 'react'
+import loading from './loading.gif';
 
 export default class ValidationMessage extends React.Component {
     render() {
@@ -10,6 +11,9 @@ export default class ValidationMessage extends React.Component {
 }
 export class Esperando extends React.Component {
     render() {
-        return <h1>Cargando ...</h1>;
+        return <div>
+        <div class="ajax-wait"></div>
+        <img src={loading} />
+      </div>;
     }
 }
