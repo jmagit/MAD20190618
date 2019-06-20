@@ -8,3 +8,8 @@ export default class ValidationMessage extends React.Component {
         return null;
     }
 }
+export class Esperando extends React.Component {
+    render() {
+        return <h1>Cargando ...</h1>;
+    }
+}

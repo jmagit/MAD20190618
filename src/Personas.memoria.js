@@ -1,9 +1,5 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-
-import ValidationMessage, {Esperando} from './ValidationMessage';
-
-const URL_BASE = process.env.REACT_APP_URL_API + 'personas';
+import ValidationMessage from './ValidationMessage';
 
 export default class Personas extends Component {
     constructor(props) {
@@ -12,65 +8,54 @@ export default class Personas extends Component {
         this.state = {
             modo: 'list',
             listado: [],
-            elemento: {},
-            loading: true,
+            elemento: {}
         };
         this.idOriginal = null;
         this.pk = 'id';
     }
     list() {
-        this.setState({ loading: true });
-        axios.get(URL_BASE).then(
-            resp => this.setState({
-                modo: 'list', listado: resp.data, loading: false
-            }),
-            err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
-                this.setState({ loading: false });
-            }
-        );
+        if (this.state.listado.length === 0) {
+            this.setState({
+                modo: 'list', listado: [
+                    { id: 1, nombre: 'Carmelo', apellidos: 'Coto', edad: 34 },
+                    { id: 2, nombre: 'Pepito', apellidos: 'Grillo', edad: 155 },
+                    { id: 3, nombre: 'Pedro', apellidos: 'Pica Piedra', edad: 51 },
+                    { id: 4, nombre: 'Pablo', apellidos: 'Marmol', edad: 47 },
+                ]
+            });
+        } else {
+            this.setState({ modo: 'list' });
+        }
     }
     add() {
         this.setState({ modo: 'add', elemento: { id: '', nombre: '', apellidos: '', edad: '' } });
     }
     edit(key) {
-        this.setState({ loading: true });
-        axios.get(URL_BASE + '/' + key).then(
-            resp => {
-                this.setState({
-                    modo: 'edit', elemento: resp.data, loading: false
-                });
-                this.idOriginal = key;
-            }
-            ,
-            err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
-                this.setState({ loading: false });
-            }
-        );
+        // eslint-disable-next-line eqeqeq
+        let rslt = this.state.listado.find(item => item[this.pk] == key);
+        if (rslt) {
+            this.setState({ modo: 'edit', elemento: Object.assign({}, rslt) });
+            this.idOriginal = key;
+        } else {
+            console.error('Elemento no encontrado');
+        }
     }
     view(key) {
-        this.setState({ loading: true });
-        axios.get(URL_BASE + '/' + key).then(
-            resp => this.setState({
-                modo: 'view', elemento: resp.data, loading: false
-            }),
-            err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
-                this.setState({ loading: false });
-            }
-        );
+        // eslint-disable-next-line eqeqeq
+        let rslt = this.state.listado.find(item => item[this.pk] == key);
+        if (rslt) {
+            this.setState({ modo: 'view', elemento: Object.assign({}, rslt) });
+        } else {
+            console.error('Elemento no encontrado');
+        }
     }
     remove(key) {
         if (!window.confirm('¿Seguro?')) return;
-        this.setState({ loading: true });
-        axios.delete(URL_BASE + '/' + key).then(
-            resp => this.list(),
-            err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
-                this.setState({ loading: false });
-            }
-        );
+        this.setState((prev) => ({
+            modo: 'list',
+            // eslint-disable-next-line eqeqeq
+            listado: prev.listado.filter(item => item[this.pk] != key)
+        }));
     }
 
     cancel() {
@@ -82,24 +67,20 @@ export default class Personas extends Component {
         // eslint-disable-next-line default-case
         switch (this.state.modo) {
             case 'add':
-                this.setState({ loading: true });
-                axios.post(URL_BASE, this.state.elemento).then(
-                    resp => this.cancel(),
-                    err => {
-                        console.error(`ERROR: ${err.response.status} ${err.message}`);
-                        this.setState({ loading: false });
-                    }
+                this.setState((prev) => ({
+                    listado: [...prev.listado, prev.elemento]
+                })
                 );
+                this.cancel();
                 break;
             case 'edit':
-                this.setState({ loading: true });
-                axios.put(URL_BASE + '/' + this.idOriginal, this.state.elemento).then(
-                    resp => this.cancel(),
-                    err => {
-                        console.error(`ERROR: ${err.response.status} ${err.message}`);
-                        this.setState({ loading: false });
-                    }
+                let idOriginal = this.idOriginal;
+                this.setState((prev) => ({
+                    // eslint-disable-next-line eqeqeq
+                    listado: prev.listado.map(item => item[this.pk] == idOriginal ? prev.elemento : item)
+                })
                 );
+                this.cancel();
                 break;
             case 'view':
                 this.cancel();
@@ -107,8 +88,6 @@ export default class Personas extends Component {
         }
     }
     render() {
-        if(this.state.loading)
-            return <Esperando />
         return (
             <div>
                 <h1>Mantenimiento de personas</h1>
@@ -188,9 +167,9 @@ class PersonasForm extends Component {
             for (var cntr of this.form.elements) {
                 if (cntr.name) {
                     errors[cntr.name] = cntr.validationMessage;
-                    if (!errors[cntr.name])
+                    if(!errors[cntr.name])
                         // eslint-disable-next-line default-case
-                        switch (cntr.name) {
+                        switch(cntr.name) {
                             case 'nombre':
                                 errors[cntr.name] = (cntr.value !== cntr.value.toUpperCase()) ? 'Debe estar en mayusculas' : null;
                                 break;
@@ -206,7 +185,7 @@ class PersonasForm extends Component {
     }
     render() {
         let htmlCodigo;
-        if (this.props.isAdd) {
+        if(this.props.isAdd) {
             htmlCodigo = <div className="form-group">
                 <label htmlFor="id">Código</label>
                 <input type="number" className="form-control" id="id" name="id" value={this.state.elemento.id}
@@ -214,10 +193,10 @@ class PersonasForm extends Component {
                 <ValidationMessage msg={this.state.msgErr.id} />
             </div>;
         } else {
-            htmlCodigo = <div className="form-group">
+             htmlCodigo = <div className="form-group">
                 <label >Código</label>
                 <div>
-                    {this.state.elemento.id}
+                {this.state.elemento.id}
                 </div>
             </div>;
         }
