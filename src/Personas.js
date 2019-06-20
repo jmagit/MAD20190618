@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ValidationMessage from './ValidationMessage';
 
 export default class Personas extends Component {
     constructor(props) {
@@ -13,24 +14,26 @@ export default class Personas extends Component {
         this.pk = 'id';
     }
     list() {
-        if(this.state.listado.length === 0) {
-            this.setState({ modo: 'list', listado: [
-                { id: 1, nombre: 'Carmelo', apellido: 'Coto', edad: 34},
-                { id: 2, nombre: 'Pepito', apellido: 'Grillo', edad: 155},
-                { id: 3, nombre: 'Pedro', apellido: 'Pica Piedra', edad: 51},
-                { id: 4, nombre: 'Pablo', apellido: 'Marmol', edad: 47},
-            ]});
+        if (this.state.listado.length === 0) {
+            this.setState({
+                modo: 'list', listado: [
+                    { id: 1, nombre: 'Carmelo', apellido: 'Coto', edad: 34 },
+                    { id: 2, nombre: 'Pepito', apellido: 'Grillo', edad: 155 },
+                    { id: 3, nombre: 'Pedro', apellido: 'Pica Piedra', edad: 51 },
+                    { id: 4, nombre: 'Pablo', apellido: 'Marmol', edad: 47 },
+                ]
+            });
         } else {
-            this.setState({ modo: 'list'});
+            this.setState({ modo: 'list' });
         }
     }
     add() {
-        this.setState({ modo: 'add', elemento: { id: '', nombre: '', apellido: '', edad: ''}});
+        this.setState({ modo: 'add', elemento: { id: '', nombre: '', apellido: '', edad: '' } });
     }
     edit(key) {
         // eslint-disable-next-line eqeqeq
         let rslt = this.state.listado.find(item => item[this.pk] == key);
-        if(rslt) {
+        if (rslt) {
             this.setState({ modo: 'edit', elemento: Object.assign({}, rslt) });
             this.idOriginal = key;
         } else {
@@ -40,22 +43,19 @@ export default class Personas extends Component {
     view(key) {
         // eslint-disable-next-line eqeqeq
         let rslt = this.state.listado.find(item => item[this.pk] == key);
-        if(rslt) {
+        if (rslt) {
             this.setState({ modo: 'view', elemento: Object.assign({}, rslt) });
         } else {
             console.error('Elemento no encontrado');
         }
     }
     remove(key) {
-        if(!window.confirm('¿Seguro?')) return;
-        // eslint-disable-next-line eqeqeq
-        let ind = this.state.listado.findIndex(item => item[this.pk] == key);
-        if(ind >= 0) {
-            this.setState((prev) => ({ modo: 'list', 
-                listado: prev.listado.find(item => item[this.pk] != key) }));
-        } else {
-            console.error('Elemento no encontrado');
-        }
+        if (!window.confirm('¿Seguro?')) return;
+        this.setState((prev) => ({
+            modo: 'list',
+            // eslint-disable-next-line eqeqeq
+            listado: prev.listado.filter(item => item[this.pk] != key)
+        }));
     }
 
     cancel() {
@@ -65,20 +65,24 @@ export default class Personas extends Component {
     }
     send() {
         // eslint-disable-next-line default-case
-        switch(this.state.modo) {
-            case 'add': 
-                this.setState((prev) => ({ 
-                    listado: Object.assign([], prev.listado, prev.elemento)})
+        switch (this.state.modo) {
+            case 'add':
+                this.setState((prev) => ({
+                    listado: [...prev.listado, prev.elemento]
+                })
                 );
                 this.cancel();
                 break;
-            case 'edit': 
-                this.setState((prev) => ({ 
-                    listado: prev.listado.map(item => item[this.pk] == this.idOriginal ? prev.elemento : item)})
+            case 'edit':
+                let idOriginal = this.idOriginal;
+                this.setState((prev) => ({
+                    // eslint-disable-next-line eqeqeq
+                    listado: prev.listado.map(item => item[this.pk] == idOriginal ? prev.elemento : item)
+                })
                 );
                 this.cancel();
                 break;
-            case 'view': 
+            case 'view':
                 this.cancel();
                 break;
         }
@@ -87,21 +91,140 @@ export default class Personas extends Component {
         return (
             <div>
                 <h1>Mantenimiento de personas</h1>
-                {this.state.modo === 'list' && <PersonasLst listado={this.state.listado} 
-                    onAdd={this.add.bind(this)} onView={this.view.bind(this)} onEdit={this.edit.bind(this)} 
+                {this.state.modo === 'list' && <PersonasLst listado={this.state.listado}
+                    onAdd={this.add.bind(this)} onView={this.view.bind(this)} onEdit={this.edit.bind(this)}
                     onDelete={this.remove.bind(this)} />}
                 {this.state.modo === 'view' && <PersonasView elemento={this.state.elemento} onCancel={this.cancel.bind(this)} />}
-                {this.state.modo === 'add' && <PersonasForm elemento={this.state.elemento} onCancel={this.cancel.bind(this)} 
+                {this.state.modo === 'add' && <PersonasForm elemento={this.state.elemento} onCancel={this.cancel.bind(this)}
                     onSend={this.send.bind(this)} isAdd={true} />}
-                {this.state.modo === 'edit' && <PersonasForm elemento={this.state.elemento} onCancel={this.cancel.bind(this)} 
+                {this.state.modo === 'edit' && <PersonasForm elemento={this.state.elemento} onCancel={this.cancel.bind(this)}
                     onSend={this.send.bind(this)} isAdd={false} />}
             </div>
         )
     }
+    componentDidMount() {
+        this.list();
+    }
+
 }
 class PersonasLst extends Component {
+    render() {
+        return <table className='table'>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <tr><button type="button" onClick={this.props.onAdd}>+</button></tr>
+                </tr>
+            </thead>
+            <tbody>
+                {this.props.listado.map(item => <tr key={item.id}>
+                    <td>{item.nombre} {item.apellido}</td>
+                    <td>
+                        <button type="button" onClick={e => this.props.onView(item.id)}>Ver</button>
+                        <button type="button" onClick={e => this.props.onEdit(item.id)}>Editar</button>
+                        <button type="button" onClick={e => this.props.onDelete(item.id)}>Borrar</button>
+                    </td>
+                </tr>)}
+            </tbody>
+        </table>;
+    }
 }
+
 class PersonasView extends Component {
+    render() {
+        return <div>
+            <p>
+                <b>Código:</b> {this.props.elemento.id} <br />
+                <b>Nombre:</b> {this.props.elemento.nombre} <br />
+                <b>Apellido:</b> {this.props.elemento.apellido} <br />
+                <b>Edad:</b> {this.props.elemento.edad}
+            </p>
+            <div>
+                <button type="button" onClick={this.props.onCancel}>Volver</button>
+            </div>
+        </div>;
+    }
 }
 class PersonasForm extends Component {
+    constructor(props) {
+        super();
+        this.state = { elemento: props.elemento, msgErr: {}, invalid: true };
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(event) {
+        const cmp = event.target.name;
+        const valor = event.target.value;
+        this.setState(prev => {
+            prev.elemento[cmp] = valor;
+            return { elemento: prev.elemento };
+        });
+        this.validar();
+    }
+    validar() {
+        if (this.form) {
+            const errors = {};
+            let invalid = false;
+            for (var cntr of this.form.elements) {
+                if (cntr.name) {
+                    errors[cntr.name] = cntr.validationMessage;
+                    if(!errors[cntr.name])
+                        // eslint-disable-next-line default-case
+                        switch(cntr.name) {
+                            case 'nombre':
+                                errors[cntr.name] = (cntr.value !== cntr.value.toUpperCase()) ? 'Debe estar en mayusculas' : null;
+                                break;
+                        }
+                    invalid = invalid || (errors[cntr.name] !== '' && errors[cntr.name] !== null && typeof (errors[cntr.name]) !== "undefined");
+                }
+            }
+            this.setState({ msgErr: errors, invalid: invalid });
+        }
+    }
+    componentDidMount() {
+        this.validar();
+    }
+    render() {
+        let htmlCodigo;
+        if(this.props.isAdd) {
+            htmlCodigo = <div className="form-group">
+                <label htmlFor="id">Código</label>
+                <input type="number" className="form-control" id="id" name="id" value={this.state.elemento.id}
+                    onChange={this.handleChange} required />
+                <ValidationMessage msg={this.state.msgErr.id} />
+            </div>;
+        } else {
+             htmlCodigo = <div className="form-group">
+                <label >Código</label>
+                <div>
+                {this.state.elemento.id}
+                </div>
+            </div>;
+        }
+        return <form ref={tag => { this.form = tag; }}>
+            {htmlCodigo}
+            <div className="form-group">
+                <label htmlFor="nombre">Nombre</label>
+                <input type="text" className="form-control" id="nombre" name="nombre" value={this.state.elemento.nombre}
+                    onChange={this.handleChange} required minLength="2" maxLength="10" />
+                <ValidationMessage msg={this.state.msgErr.nombre} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="apellido">Apellido</label>
+                <input type="text" className="form-control" id="apellido" name="apellido" value={this.state.elemento.apellido}
+                    onChange={this.handleChange} minLength="2" maxLength="10" />
+                <ValidationMessage msg={this.state.msgErr.apellido} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="edad">Edad</label>
+                <input type="number" className="form-control" id="edad" name="edad" value={this.state.elemento.edad}
+                    onChange={this.handleChange} min="16" max="67" />
+                <ValidationMessage msg={this.state.msgErr.edad} />
+            </div>
+            <div>
+                <button type="button" className="btn btn-primary" onClick={this.props.onSend}
+                    disabled={this.state.invalid}>Enviar</button>
+                <button type="button" className="btn btn-primary" onClick={this.props.onCancel}>Volver</button>
+            </div>
+        </form>
+    }
 }
