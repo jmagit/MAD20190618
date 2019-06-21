@@ -8,6 +8,7 @@ import Calculadora from './Calculadora';
 import Personas from './Personas';
 import Blog from './Blog';
 import { Navbar, Nav } from 'react-bootstrap';
+import { BrowserRouter, Route, Redirect, NavLink, Switch } from 'react-router-dom';
 
 /*
 class Cabecera extends React.Component {
@@ -36,30 +37,35 @@ class Cabecera extends React.Component {
 class Cabecera extends React.Component {
   render() {
     return <Navbar bg="dark" variant="dark" expand="lg">
-    <Navbar.Brand href="/"><img src={logo} className="App-logo" alt="logo" /></Navbar.Brand>
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="mr-auto">
-      {this.props.menu.map((item, index) =>
+      <Navbar.Brand href="/"><img src={logo} className="App-logo" alt="logo" /></Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          {this.props.menu.map((item, index) =>
             <li key={index} className="nav-item">
-              <button className="btn btn-link nav-link" onClick={e => this.props.onSelect(index)}>{item.titulo}</button>
+              <NavLink className="btn btn-link nav-link" activeClassName="active" to={item.path}>{item.titulo}</NavLink>
             </li>
           )}
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>;
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>;
+  }
+}
+class PageNotFound extends React.Component {
+  render() {
+    return <h1>404 Page not found</h1>
   }
 }
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.menu = [
-      { titulo: 'Blog', componente: <Blog /> },
-      { titulo: 'Inicio', componente: (<div><Saluda nombre={this.props.name} /><Contador /></div>) },
-      { titulo: 'Demos', componente: <Demos name="Indra" init={5} /> },
-      { titulo: 'Muro', componente: <MisImagenes /> },
-      { titulo: 'Calculadora', componente: <div><h1>Calculadora</h1><Calculadora /></div> },
-      { titulo: 'Personas', componente: <Personas /> },
+      { titulo: 'Blog', path: '/blog', componente: <Blog /> },
+      { titulo: 'Inicio', path: '/inicio', componente: (<div><Saluda nombre={this.props.name} /><Contador /></div>) },
+      { titulo: 'Demos', path: '/demos', componente: <Demos name="Indra" init={5} /> },
+      { titulo: 'Muro', path: '/muro', componente: <MisImagenes /> },
+      { titulo: 'Calculadora', path: '/chisme/de/hacer/cuentas', componente: <div><h1>Calculadora</h1><Calculadora /></div> },
+      { titulo: 'Personas', path: '/personas', componente: <Personas /> },
     ];
     this.state = { paginaActual: this.menu[0].componente };
     this.selecciona = (index) => {
@@ -69,12 +75,26 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <Cabecera menu={this.menu} onSelect={this.selecciona} />
-        <div className="container-fluid">
-          {this.state.paginaActual}
+      <BrowserRouter>
+        <div className="App">
+          <Cabecera menu={this.menu} onSelect={this.selecciona} />
+          <div className="container-fluid">
+            <Switch>
+              <Route path='/inicio' render={() => <div><Saluda nombre={this.props.name} /><Contador /></div>} exact />
+              <Route path='/demos' component={Demos} exact />
+              <Route path='/muro' component={MisImagenes} exact />
+              <Route path='/chisme/de/hacer/cuentas' component={Calculadora} exact />
+              <Route path='/personas' component={Personas} exact />
+              <Route path='/personas/add' component={Personas} exact />
+              <Route path='/personas/:id' component={Personas} exact />
+              <Route path='/personas/:id/edit' component={Personas} exact />
+              <Route path='/blog' component={Blog} exact />
+              <Redirect from="/" to="/inicio" exact push />
+              <Route component={PageNotFound} exact />
+            </Switch>
+          </div>
         </div>
-      </div>
+      </BrowserRouter>
     );
   }
 }

@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
-import ValidationMessage, { Esperando } from './ValidationMessage';
+import ValidationMessage, {Esperando} from './ValidationMessage';
 
 const URL_BASE = process.env.REACT_APP_URL_API + 'personas';
 
@@ -18,7 +17,6 @@ export default class Personas extends Component {
         };
         this.idOriginal = null;
         this.pk = 'id';
-        this.urlAnt = '';
     }
     list() {
         this.setState({ loading: true });
@@ -79,8 +77,6 @@ export default class Personas extends Component {
         this.setState({ elemento: {} });
         this.idOriginal = null;
         this.list();
-        window.history.pushState(null, null, '/personas');
-        // window.location.href = '/personas';
     }
     send() {
         // eslint-disable-next-line default-case
@@ -111,12 +107,13 @@ export default class Personas extends Component {
         }
     }
     render() {
-        if (this.state.loading)
+        if(this.state.loading)
             return <Esperando />
         return (
             <div>
                 <h1>Mantenimiento de personas</h1>
                 {this.state.modo === 'list' && <PersonasLst listado={this.state.listado}
+                    onAdd={this.add.bind(this)} onView={this.view.bind(this)} onEdit={this.edit.bind(this)}
                     onDelete={this.remove.bind(this)} />}
                 {this.state.modo === 'view' && <PersonasView elemento={this.state.elemento} onCancel={this.cancel.bind(this)} />}
                 {this.state.modo === 'add' && <PersonasForm elemento={this.state.elemento} onCancel={this.cancel.bind(this)}
@@ -126,28 +123,8 @@ export default class Personas extends Component {
             </div>
         )
     }
-    decodeRuta() {
-        if (this.props.match.url === this.urlAnt) return;
-        this.urlAnt = this.props.match.url;
-        if (this.props.match.params.id) {
-            if (this.props.match.url.endsWith('/edit')) {
-                this.edit(this.props.match.params.id);
-            } else {
-                this.view(this.props.match.params.id);
-            }
-        } else {
-            if (this.props.match.url.endsWith('/add')) {
-                this.add();
-            } else {
-                this.list();
-            }
-        }
-    }
     componentDidMount() {
-        this.decodeRuta();
-    }
-    componentDidUpdate(next_props, next_state) {
-        this.decodeRuta();
+        this.list();
     }
 
 }
@@ -157,15 +134,16 @@ class PersonasLst extends Component {
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <tr><Link to={`/personas/add`}>Añadir</Link></tr>
+                    <tr><button type="button" onClick={this.props.onAdd}>+</button></tr>
                 </tr>
             </thead>
             <tbody>
                 {this.props.listado.map(item => <tr key={item.id}>
-                    <td><Link to={`/personas/${item.id}`}>{item.nombre} {item.apellidos}</Link> </td>
+                    <td>{item.nombre} {item.apellidos}</td>
                     <td>
-                        <Link className="btn btn-link" to={`/personas/${item.id}/edit`}>Editar</Link>
-                        <button className="btn btn-link" type="button" onClick={e => this.props.onDelete(item.id)}>Borrar</button>
+                        <button type="button" onClick={e => this.props.onView(item.id)}>Ver</button>
+                        <button type="button" onClick={e => this.props.onEdit(item.id)}>Editar</button>
+                        <button type="button" onClick={e => this.props.onDelete(item.id)}>Borrar</button>
                     </td>
                 </tr>)}
             </tbody>
