@@ -9,6 +9,7 @@ import Personas from './Personas';
 import Blog from './Blog';
 import { Navbar, Nav } from 'react-bootstrap';
 import { BrowserRouter, Route, Redirect, NavLink, Switch } from 'react-router-dom';
+import {OtroCounter} from './OtroContador'
 
 /*
 class Cabecera extends React.Component {
@@ -61,7 +62,7 @@ class App extends React.Component {
     super(props);
     this.menu = [
       { titulo: 'Blog', path: '/blog', componente: <Blog /> },
-      { titulo: 'Inicio', path: '/inicio', componente: (<div><Saluda nombre={this.props.name} /><Contador /></div>) },
+      { titulo: 'Inicio', path: '/inicio', componente: (<div><Saluda nombre={this.props.name} /><OtroCounter /></div>) },
       { titulo: 'Demos', path: '/demos', componente: <Demos name="Indra" init={5} /> },
       { titulo: 'Muro', path: '/muro', componente: <MisImagenes /> },
       { titulo: 'Calculadora', path: '/chisme/de/hacer/cuentas', componente: <div><h1>Calculadora</h1><Calculadora /></div> },
@@ -80,7 +81,7 @@ class App extends React.Component {
           <Cabecera menu={this.menu} onSelect={this.selecciona} />
           <div className="container-fluid">
             <Switch>
-              <Route path='/inicio' render={() => <div><Saluda nombre={this.props.name} /><Contador /></div>} exact />
+              <Route path='/inicio' render={() => <div><Saluda nombre={this.props.name} /><OtroCounter /></div>} exact />
               <Route path='/demos' component={Demos} exact />
               <Route path='/muro' component={MisImagenes} exact />
               <Route path='/chisme/de/hacer/cuentas' component={Calculadora} exact />

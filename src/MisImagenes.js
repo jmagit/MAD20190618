@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Contador from './Contador';
+import * as db from './my-store'
 
 export class FotoCard extends Component {
     render() {
@@ -58,6 +59,7 @@ export default class MisImagenes extends Component {
         );
         return (
             <div>
+                <button onClick={e => db.CounterDownCmd() }>Up</button>
                 <Contador init={this.state.dim} delta={32} min={32} max={512} onChange={rslt => this.setState({ dim: rslt })} />
                 <div className="container-fluid">
                     {rslt}

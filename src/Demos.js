@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Contador from './Contador'
 import Calculadora from './Calculadora';
 import ErrorBoundary from './ErrorBoundary';
+import {OtroCounter} from './OtroContador'
+import * as db from './my-store'
 
 export const Saluda = (props) => <h1>Hola {props.nombre}</h1>;
 
@@ -45,10 +47,22 @@ export default class Demos extends Component {
         super(props);
         this.state = { valor: +this.props.init, cont: +this.props.init };
     }
+    componentWillMount() {
+        this.unsubscribe = db.store.subscribe(() => console.warn('------>' + db.store.getState().contador))
+
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
     render() {
         //this.props.name = "kkkk";
         return (
             <div>
+                <OtroCounter />
+                <hr />
+                <button onClick={e => db.CounterDownCmd() }>Up</button>
+
                 <Contador init={this.state.cont} min={1} max={10} onChange={v => this.setState({ valor: v })} />
                 Numero: {this.state.valor}<br />
                 <ErrorBoundary>
