@@ -57,6 +57,7 @@ export default class Calculadora extends Component {
     }
     componentWillReceiveProps(next_props) {
         console.warn('Calculadora componentWillReceiveProps');
+        // eslint-disable-next-line eqeqeq
         if(this.props.init !== next_props.init && next_props.init != this.state.pantalla) {
             if(isNaN(+next_props.init))
                 throw new Error("Not a number");

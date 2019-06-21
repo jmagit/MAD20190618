@@ -61,7 +61,8 @@ export default class Demos extends Component {
             <div>
                 <OtroCounter />
                 <hr />
-                <button onClick={e => db.CounterDownCmd() }>Up</button>
+                <button onClick={e => db.CounterUpCmd() }>Up</button>
+                <button onClick={e => db.AddNotifyCmd(`El contador vale ${db.store.getState().contador}`) }>Notifica</button>
 
                 <Contador init={this.state.cont} min={1} max={10} onChange={v => this.setState({ valor: v })} />
                 Numero: {this.state.valor}<br />

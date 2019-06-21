@@ -13,7 +13,7 @@ export class Esperando extends React.Component {
     render() {
         return <div>
         <div class="ajax-wait"></div>
-        <img src={loading} />
+        <img src={loading} alt="Cargando ..." />
       </div>;
     }
 }

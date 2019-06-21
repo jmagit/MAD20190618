@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 import ValidationMessage, { Esperando } from './ValidationMessage';
+import * as db from './my-store'
 
 const URL_BASE = process.env.REACT_APP_URL_API + 'personas';
 
@@ -27,7 +28,7 @@ export default class Personas extends Component {
                 modo: 'list', listado: resp.data, loading: false
             }),
             err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
+                db.AddErrNotifyCmd(err);
                 this.setState({ loading: false });
             }
         );
@@ -46,7 +47,7 @@ export default class Personas extends Component {
             }
             ,
             err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
+                db.AddErrNotifyCmd(err);
                 this.setState({ loading: false });
             }
         );
@@ -58,7 +59,7 @@ export default class Personas extends Component {
                 modo: 'view', elemento: resp.data, loading: false
             }),
             err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
+                db.AddErrNotifyCmd(err);
                 this.setState({ loading: false });
             }
         );
@@ -69,7 +70,7 @@ export default class Personas extends Component {
         axios.delete(URL_BASE + '/' + key).then(
             resp => this.list(),
             err => {
-                console.error(`ERROR: ${err.response.status} ${err.message}`);
+                db.AddErrNotifyCmd(err);
                 this.setState({ loading: false });
             }
         );
@@ -90,7 +91,7 @@ export default class Personas extends Component {
                 axios.post(URL_BASE, this.state.elemento).then(
                     resp => this.cancel(),
                     err => {
-                        console.error(`ERROR: ${err.response.status} ${err.message}`);
+                        db.AddErrNotifyCmd(err);
                         this.setState({ loading: false });
                     }
                 );
@@ -100,7 +101,7 @@ export default class Personas extends Component {
                 axios.put(URL_BASE + '/' + this.idOriginal, this.state.elemento).then(
                     resp => this.cancel(),
                     err => {
-                        console.error(`ERROR: ${err.response.status} ${err.message}`);
+                        db.AddErrNotifyCmd(err);
                         this.setState({ loading: false });
                     }
                 );

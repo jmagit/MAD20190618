@@ -3,14 +3,14 @@ import logo from './logo.svg';
 import './App.css';
 import Demos, { Saluda } from './Demos';
 import MisImagenes from './MisImagenes';
-import Contador from './Contador';
+//import Contador from './Contador';
 import Calculadora from './Calculadora';
 import Personas from './Personas';
 import Blog from './Blog';
 import { Navbar, Nav } from 'react-bootstrap';
 import { BrowserRouter, Route, Redirect, NavLink, Switch } from 'react-router-dom';
 import {OtroCounter} from './OtroContador'
-
+import {Notificaciones} from './notificaciones'
 /*
 class Cabecera extends React.Component {
   render() {
@@ -79,6 +79,7 @@ class App extends React.Component {
       <BrowserRouter>
         <div className="App">
           <Cabecera menu={this.menu} onSelect={this.selecciona} />
+          <Notificaciones />
           <div className="container-fluid">
             <Switch>
               <Route path='/inicio' render={() => <div><Saluda nombre={this.props.name} /><OtroCounter /></div>} exact />
